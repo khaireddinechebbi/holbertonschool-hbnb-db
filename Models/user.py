@@ -1,40 +1,24 @@
 #!/usr/bin/python3
-"""
-User module containing the User class
-"""
-from sqlalchemy import Column, String
-from Models.base_model import BaseModel, Base  # Assuming you have a BaseModel and Base class
-from __init__ import *
 
-class User(BaseModel, Base):
-    """
-    User class representing a user in the system
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-    Attributes:
-        email (str): The user's email address.
-        password (str): The user's password.
-        first_name (str): The user's first name.
-        last_name (str): The user's last name.
-    """
+from datetime import datetime
+from app import db
+
+class User(db.Model):
     __tablename__ = 'users'
 
-    email = db.Column(db.String(128), unique=True, nullable=False)
+    id = db.Column(db.String(36), primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
-    first_name = db.Column(db.String(128), nullable=True)
-    last_name = db.Column(db.String(128), nullable=True)
+    is_admin = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
-    def __init__(self, email, password, first_name=None, last_name=None):
-        """
-        Initialize a new User instance
-
-        Args:
-            email (str): The user's email address.
-            password (str): The user's password.
-            first_name (str): The user's first name.
-            last_name (str): The user's last name.
-        """
-        super().__init__()
+    def __init__(self, id, email, password, is_admin=False):
+        self.id = id
         self.email = email
         self.password = password
-        self.first_name = first_name
-        self.last_name = last_name
+        self.is_admin = is_admin
