@@ -55,4 +55,5 @@ class Review(BaseModel, Base, db.Model):
         })
         return review_dict
     
-Base.metadata.create_all(bind=db.engine)
+if __name__ == "__main__":
+    Base.metadata.create_all(bind=db.engine)

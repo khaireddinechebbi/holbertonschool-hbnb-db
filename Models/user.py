@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app import db
 from Models.base_model import BaseModel, Base
 
-class User(BaseModel, Base):
+class User(BaseModel, Base, db.Model):
     """
     User class representing a user in the system
 
@@ -52,5 +52,6 @@ class User(BaseModel, Base):
             'last_name': self.last_name,
         })
         return user_dict
-    
-Base.metadata.create_all(bind=db.engine)
+
+if __name__ == "__main__":
+    Base.metadata.create_all(bind=db.engine)

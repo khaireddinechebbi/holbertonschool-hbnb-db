@@ -3,6 +3,9 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app import db
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 class Country(db.Model):
     """
@@ -18,6 +21,9 @@ class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
 
+    # Relationship with City model
+    cities = db.relationship('City', backref='country', lazy=True)
+
     def __init__(self, name):
         """
         Initialize a new Country instance
@@ -26,7 +32,6 @@ class Country(db.Model):
             name (str): The name of the country.
         """
         self.name = name
-        self.cities = []
 
     def add_city(self, city):
         """
@@ -35,10 +40,26 @@ class Country(db.Model):
         Args:
             city (City): The city to be added.
         """
-        self.cities.append(city)
+        if city not in self.cities:
+            self.cities.append(city)
+
+    def to_dict(self):
+        """
+        Convert instance attributes to a dictionary format
+        Returns:
+            dict: Dictionary containing the instance attributes.
+        """
+        return {
+            'id': self.id,
+            'name': self.name,
+            'cities': [city.to_dict() for city in self.cities]
+        }
 
     def __repr__(self):
         """
         Return a string representation of the Country instance.
         """
         return f'<Country {self.name}>'
+
+if __name__ == "__main__":
+    Base.metadata.create_all(bind=db.engine)
