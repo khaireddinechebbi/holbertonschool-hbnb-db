@@ -4,19 +4,33 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import db
+from Models.base_model import BaseModel
 
-class City(db.Model):
+class City(BaseModel):
+    """
+    City class representing a city
 
+    Attributes:
+        name (str): Name of the city.
+        country_id (int): Foreign key referencing the country's ID.
+        country (Country): Relationship to the Country model.
+    """
     __tablename__ = 'cities'
-    __table_args__ = {'extend_existing': True}
 
+    name = db.Column(db.String(128), nullable=False)
+    country_id = db.Column(db.Integer, db.ForeignKey('countries.id'), nullable=False)
 
-    id = db.Column(db.String(36), primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
-    country_id = db.Column(db.String(36), db.ForeignKey('countries.id'), nullable=False)
+    # Relationship
+    country = db.relationship('Country', backref=db.backref('cities', lazy=True))
 
+    def __init__(self, name, country):
+        """
+        Initialize a new City instance
 
-    def __init__(self, id, name, country_id):
-        self.id = id
+        Args:
+            name (str): The name of the city.
+            country (Country): The country where the city is located.
+        """
+        super().__init__()
         self.name = name
-        self.country_id = country_id
+        self.country = country
