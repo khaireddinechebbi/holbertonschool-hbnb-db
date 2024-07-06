@@ -37,7 +37,6 @@ class Place(BaseModel, Base, db.Model):
     max_guests = db.Column(db.Integer, nullable=False)
     price_per_night = db.Column(db.Float, nullable=False)
 
-    host = db.relationship('User', backref='place')
     amenities = db.relationship('Amenity', backref='place')
     reviews = db.relationship('Review', backref='place')
 

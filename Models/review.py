@@ -20,9 +20,6 @@ class Review(BaseModel, Base, db.Model):
     text = db.Column(db.String(255), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
 
-    # Relationships
-    user = db.relationship('User', backref='reviews')
-    place = db.relationship('Place', backref='reviews')
 
     def __init__(self, user_id, place_id, text, rating):
         """

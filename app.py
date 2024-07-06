@@ -2,16 +2,20 @@
 from flask import Flask, request, jsonify, make_response
 from datetime import datetime
 import uuid
+import os
 import data_manager
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
 # Configure SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydb.db'
 
 db = SQLAlchemy(app)
+
+if app.config['SQLALCHEMY_DATABASE_URI'].startswith('sqlite'):
+    if not os.path.exists(os.path.join(app.root_path, 'dev.db')):
+        db.create_all()
 
 # Error handler for generic exceptions
 @app.errorhandler(Exception)
