@@ -1,31 +1,22 @@
 #!/usr/bin/python3
 
 import os
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
-class Config(object):
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+class Config:
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'default_secret_key')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    USE_DATABASE = os.environ.get('USE_DATABASE', 'true').lower() in ['true', '1', 'yes']
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL', 'sqlite:///dev.db')
 
 class ProductionConfig(Config):
     DEBUG = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///prod.db')
 
-app = Flask(__name__)
-
-if os.environ.get('ENV') == 'production':
-    app.config.from_object('config.ProductionConfig')
-else:
-    app.config.from_object('config.DevelopmentConfig')
-
-db = SQLAlchemy(app)
-
-if app.config['SQLALCHEMY_DATABASE_URI'].startswith('sqlite'):
-    if not os.path.exists(os.path.join(app.root_path, 'dev.db')):
-        db.create_all()
-
-if __name__ == '__main__':
-    app.run(debug=True)
+config = {
+    'development': DevelopmentConfig,
+    'production': ProductionConfig,
+    'default': DevelopmentConfig
+}

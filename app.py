@@ -8,7 +8,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# Configure SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydb.db'
 
 db = SQLAlchemy(app)
@@ -17,7 +16,6 @@ if app.config['SQLALCHEMY_DATABASE_URI'].startswith('sqlite'):
     if not os.path.exists(os.path.join(app.root_path, 'dev.db')):
         db.create_all()
 
-# Error handler for generic exceptions
 @app.errorhandler(Exception)
 def handle_error(e):
     app.logger.error(f'An unexpected error occurred: {str(e)}')
