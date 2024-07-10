@@ -19,14 +19,14 @@ data_manager = DataManager()
 
 admin = Admin(app, name='My App', template_mode='bootstrap3')
 
-# Add your models to Flask-Admin
+
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(City, db.session))
 admin.add_view(ModelView(Country, db.session))
 admin.add_view(ModelView(Amenity, db.session))
 admin.add_view(ModelView(Place, db.session))
 
-# Routes for home and managing users 
+
 @app.route('/')
 def index():
     return redirect(url_for('admin.index'))
