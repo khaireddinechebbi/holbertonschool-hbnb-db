@@ -5,8 +5,8 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from Models.user import User
-from Models.place import Place
+from models.user import User
+from models.place import Place
 
 
 class TestPlace(unittest.TestCase):
