@@ -1,24 +1,26 @@
 #!/usr/bin/python3
+
 import os
 
-class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'super_secret_key'
+class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    USE_DATABASE = True
 
 class DevelopmentConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or 'sqlite:///dev.db'
-
-class TestingConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or 'sqlite:///test.db'
-    TESTING = True
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///dev.db'
+    JWT_SECRET_KEY = 'super-secret'
 
 class ProductionConfig(Config):
+    DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///prod.db'
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'default-secret-key')
 
-config = {
-    'development': DevelopmentConfig,
-    'testing': TestingConfig,
-    'production': ProductionConfig,
-    'default': DevelopmentConfig
-}
+
+config_by_name = dict(
+    development=DevelopmentConfig,
+    production=ProductionConfig
+)
+
+
+ENV = os.environ.get('ENV', 'development')
+Config = config_by_name.get(ENV, DevelopmentConfig)
